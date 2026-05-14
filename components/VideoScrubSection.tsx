@@ -126,7 +126,7 @@ export default function VideoScrubSection() {
         {/* ── Video — CSS handles grayscale, no canvas needed ─────────────── */}
         <video
           ref={videoRef}
-          src="/printer-v2.mp4"
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/printer-v2.mp4`}
           preload="auto"
           muted
           playsInline

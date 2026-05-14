@@ -1,10 +1,15 @@
 import type { NextConfig } from "next";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "/mp4200hs";
+
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: "/mp4200hs",
+  basePath,
   images: {
     unoptimized: true,
+  },
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
   },
 };
 
