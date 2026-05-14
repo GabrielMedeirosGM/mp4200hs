@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
@@ -33,8 +32,9 @@ export default function NavBar() {
 
         {/* Logo — avatar + developer by SnT */}
         <div className="flex items-end">
-          <Image
-            src="/avatar.png"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/avatar.png`}
             alt="SnT"
             width={68}
             height={68}
