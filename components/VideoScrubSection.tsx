@@ -82,15 +82,28 @@ export default function VideoScrubSection() {
 
     // ── After metadata: set wrapper height proportional to duration ──────────
     const setup = () => {
-      video.pause();
-      setReady(true);
       const dur = video.duration || 10;
-      // 220 vh por segundo — vídeo mais curto precisa de mais espaço de scroll
-      // para o scrubbing ser lento e legível (mín 500vh, máx 1200vh)
       const h = Math.min(1200, Math.max(500, Math.round(dur * 220)));
       wrapper.style.height = `${h}vh`;
-      targetP.current    = getP();
-      smoothP.current    = targetP.current;
+      targetP.current  = getP();
+      smoothP.current  = targetP.current;
+
+      // iOS Safari ignores preload and blocks currentTime until play() is called.
+      // A silent play→pause primes the buffer so frame scrubbing works.
+      const prime = video.play();
+      if (prime !== undefined) {
+        prime.then(() => {
+          video.pause();
+          video.currentTime = 0;
+          setReady(true);
+        }).catch(() => {
+          // Autoplay blocked — still mark ready; scrubbing will work after first user gesture
+          setReady(true);
+        });
+      } else {
+        video.pause();
+        setReady(true);
+      }
     };
 
     if (video.readyState >= 1) {
@@ -128,6 +141,7 @@ export default function VideoScrubSection() {
           ref={videoRef}
           src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/printer-v2.mp4`}
           preload="auto"
+          autoPlay
           muted
           playsInline
           style={{
